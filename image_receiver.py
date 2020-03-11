@@ -1,6 +1,7 @@
 import serial
 import cv2
 import numpy as np
+import time
 
 class ImageReceiver:
     def __init__(self, port="/dev/ttyUSB0",baudrate=921600):
@@ -26,3 +27,11 @@ class ImageReceiver:
 
 if __name__ == "__main__":
     receiver = ImageReceiver()
+    ts = time.time()
+    while True:
+        im = receiver.next_image()
+        cv2.imshow("frame", im)
+        key = cv2.waitKey(1) & 0xFF
+        next_ts = time.time()
+        print(next_ts - ts)
+        ts = next_ts
