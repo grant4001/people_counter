@@ -8,7 +8,7 @@ class ImageReceiver:
         self.ser = serial.Serial(port,baudrate)
 
     def next_image(self):
-        buffer = []
+        buffer = bytes()
         while True:
             idx_buffer = []
             buffer += self.ser.read(self.ser.inWaiting())
@@ -18,10 +18,9 @@ class ImageReceiver:
     
             if len(idx_buffer) > 1:
                 image = buffer[idx_buffer[0]:idx_buffer[1]]
-                im_bytes = bytes(image)
-                print(len(im_bytes))
+                print(len(image))
 
-                im = cv2.imdecode(np.frombuffer(im_bytes,dtype='uint8'),
+                im = cv2.imdecode(np.frombuffer(image,dtype='uint8'),
                                   cv2.IMREAD_UNCHANGED)
 
                 return im
