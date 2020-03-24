@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Navigation = ({ username, handleLogout }) => {
     let logout = !!username ? <div>
@@ -17,7 +18,7 @@ const Navigation = ({ username, handleLogout }) => {
             <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li className="nav-item">
-                        <a className="nav-link" href="/login">Admin Login</a>
+                        <NavLink className="nav-link" to="/login">Admin Login</NavLink>
                     </li>
                 </ul>
             </div>

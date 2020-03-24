@@ -5,14 +5,16 @@ const AdminPortal = () => {
     const [locationData, setLocationData] = useState([]);
 
     useEffect(() => {
-        setLocationData(getLocationData());
+        fetch("/locations").then(response => response.json()).then(payload => {
+            setLocationData(payload.data);
+        });
     }, []);
     return (
         <div>
             <h1>Admin Portal</h1>
             <div>
                 <div className="row">
-                    <div className="col-md-3"></div>
+                    <div className="col-md-4"></div>
                     <div className="col-md-2">Current Occupancy</div>
                     <div className="col-md-2">Maximum Occupancy</div>
                 </div>
@@ -20,7 +22,7 @@ const AdminPortal = () => {
                     let url = "/location?name=" + name;
                     return (
                         <div className="row" key={index}>
-                            <div className="col-md-1">{name}: </div>
+                            <div className="col-md-2">{name}: </div>
                             <div className="col-md-1">Current: </div>
                             <div className="col-md-1">69/420 </div>
                             <div className="col-md-2">
@@ -48,11 +50,5 @@ const AdminPortal = () => {
         </div>
     );
 }
-
-const getLocationData = () => {
-    // TODO: make this http request instead of hardcode
-    return ["location1", "location2", "location3"];
-};
-
 
 export default AdminPortal;

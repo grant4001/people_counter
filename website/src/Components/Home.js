@@ -4,7 +4,9 @@ const Home = () => {
     const [locationData, setLocationData] = useState([]);
 
     useEffect(() => {
-        setLocationData(getLocationData());
+        fetch("/locations").then(response => response.json()).then(payload => {
+            setLocationData(payload.data);
+        });
     }, []);
 
     return (
@@ -22,10 +24,5 @@ const Home = () => {
     );
 
 }
-
-const getLocationData = () => {
-    // TODO: make this http request instead of hardcode
-    return ["location1", "location2", "location3"];
-};
 
 export default Home;
