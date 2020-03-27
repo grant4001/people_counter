@@ -18,18 +18,23 @@ const AdminPortal = () => {
                     <div className="col-md-2">Current Occupancy</div>
                     <div className="col-md-2">Maximum Occupancy</div>
                 </div>
-                {locationData.map((name, index) => {
-                    let url = "/location?name=" + name;
+                {locationData.map((metadata, index) => {
+                    let url = "/location?name=" + metadata.name;
                     return (
                         <div className="row" key={index}>
-                            <div className="col-md-2">{name}: </div>
+                            <div className="col-md-2">{metadata.name}: </div>
                             <div className="col-md-1">Current: </div>
-                            <div className="col-md-1">69/420 </div>
+                            <div className="col-md-1">69/{metadata.maximum} </div>
                             <div className="col-md-2">
                                 <div className="input-group mb-3">
-                                    <input type="number" className="form-control" aria-label="Current Occupancy" />
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        aria-label="Current Occupancy" />
                                     <div className="input-group-append">
-                                        <button className="btn btn-outline-secondary" type="button">Update</button>
+                                        <button
+                                            className="btn btn-outline-secondary"
+                                            type="button">Update</button>
                                     </div>
                                 </div>
                             </div>

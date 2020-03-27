@@ -28,7 +28,9 @@ class App extends Component {
           <Navigation username={this.state.username} handleLogout={() => this.handleUserLogin("")} />
           <Switch>
             <Route path="/" component={Home} exact />
-            <Route path="/login" render={() => <AdminLogin handleUserLogin={this.handleUserLogin} />} />
+            <Route path="/login" render={() =>
+              <AdminLogin handleUserLogin={this.handleUserLogin}
+                username={this.state.username} />} />
             <Route path="/portal" component={AdminPortal} />
             <Route path="/location" component={LocationHistory} />
             <Route component={Error} />

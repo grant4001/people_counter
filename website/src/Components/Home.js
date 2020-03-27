@@ -13,9 +13,9 @@ const Home = () => {
         <div>
             <h1>Home</h1>
             <div>
-                {locationData.map((name, index) => (
+                {locationData.map((metadata, index) => (
                     <div className="row" key={index}>
-                        <h3 className="d-inline col-md-5">{name}: Current Level: </h3>
+                        <h3 className="d-inline col-md-5">{metadata.name}: Current Level: </h3>
                         <h3 className="d-inline col-md-4">8/8</h3>
                     </div>))
                 }

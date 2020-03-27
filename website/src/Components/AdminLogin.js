@@ -3,7 +3,12 @@ import { Redirect } from 'react-router-dom';
 
 class AdminLogin extends React.Component {
 
-    state = { redirect: false };
+    state = {};
+
+    constructor(props) {
+        super(props);
+        this.state.redirect = !!this.props.username;
+    }
 
     onSubmit = () => {
         let username = document.getElementById("username").value;
