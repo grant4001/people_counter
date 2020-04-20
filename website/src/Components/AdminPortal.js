@@ -16,7 +16,7 @@ const AdminPortal = () => {
       if (!value) {
         return;
       }
-      putData('/locations/cur/' + index, { value: value }).then(
+      patchData('/locations/cur/' + index, { value: value }).then(
         (response) => {
           console.log(response);
           window.location.reload();
@@ -28,7 +28,7 @@ const AdminPortal = () => {
       if (!value) {
         return;
       }
-      putData('/locations/max/' + index, { value: value }).then(
+      patchData('/locations/max/' + index, { value: value }).then(
         (response) => {
           console.log(response);
           window.location.reload();
@@ -99,10 +99,10 @@ const AdminPortal = () => {
   );
 }
 
-async function putData(url = '', data = {}) {
+async function patchData(url = '', data = {}) {
   // Default options are marked with *
   const response = await fetch(url, {
-    method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+    method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
     headers: {
       'Content-Type': 'application/json'
     },

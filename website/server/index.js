@@ -42,7 +42,7 @@ app.get('/locations', (req, res) => {
   });
 });
 
-app.put('/locations/max/:location_id', (req, res) => {
+app.patch('/locations/max/:location_id', (req, res) => {
   let location_id = req.params.location_id;
   let p = path.join('..', 'data', location_id, 'meta.json');
   fs.readFile(p, (err, contents) => {
@@ -58,7 +58,7 @@ app.put('/locations/max/:location_id', (req, res) => {
   });
 });
 
-app.put('/locations/cur/:location_id', (req, res) => {
+app.patch('/locations/cur/:location_id', (req, res) => {
   let location_id = req.params.location_id;
   let p = path.join('..', 'data', location_id, 'meta.json');
   fs.readFile(p, (err, contents) => {
