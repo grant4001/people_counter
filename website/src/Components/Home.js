@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+const MAX_LEVEL = 8;
+
 const Home = () => {
   const [locationData, setLocationData] = useState([]);
 
@@ -13,12 +15,16 @@ const Home = () => {
     <div>
       <h1>Home</h1>
       <div>
-        {locationData.map((metadata, index) => (
-          <span className="row" key={index}>
-            <h3 className="col-4">{metadata.name}: </h3>
-            <h3 className="col-4">Current Level: </h3>
-            <h3 className="col-4">8/8</h3>
-          </span>))
+        {
+          locationData.map((metadata, index) => {
+            let public_level = metadata.current / metadata.maximum * MAX_LEVEL;
+            public_level = Math.round(public_level);
+            return (<span className="row" key={index}>
+              <h3 className="col-4">{metadata.name}: </h3>
+              <h3 className="col-4">Current Level: </h3>
+              <h3 className="col-4">{public_level}/{MAX_LEVEL}</h3>
+            </span>);
+          })
         }
       </div>
     </div>
