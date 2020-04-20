@@ -58,6 +58,21 @@ app.put('/locations/max/:location_id', (req, res) => {
   });
 });
 
+app.put('/locations/cur/:location_id', (req, res) => {
+  let location_id = req.params.location_id;
+  let p = path.join('..', 'data', location_id, 'meta.json');
+  fs.readFile(p, (err, contents) => {
+    if (err) console.log(err);
+    let parsed = JSON.parse(contents);
+    parsed.current = req.body.value;
+    let output = JSON.stringify(parsed);
+    fs.writeFile(p, output, (err) => {
+      if (err) console.log(err);
+      res.setHeader('Content-Type', 'text/html');
+      res.send("OK");
+    })
+  });
+});
 app.listen(3001, () =>
   console.log('Express server is running on localhost:3001')
 );
