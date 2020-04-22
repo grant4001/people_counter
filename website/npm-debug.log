@@ -1,0 +1,44 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'run', 'dev' ]
+2 info using npm@3.5.2
+3 info using node@v8.10.0
+4 verbose run-script [ 'predev', 'dev', 'postdev' ]
+5 info lifecycle room-occupancy-app@0.1.0~predev: room-occupancy-app@0.1.0
+6 silly lifecycle room-occupancy-app@0.1.0~predev: no script for predev, continuing
+7 info lifecycle room-occupancy-app@0.1.0~dev: room-occupancy-app@0.1.0
+8 verbose lifecycle room-occupancy-app@0.1.0~dev: unsafe-perm in lifecycle true
+9 verbose lifecycle room-occupancy-app@0.1.0~dev: PATH: /usr/share/npm/bin/node-gyp-bin:/home/gyu/Classes/347/people_counter/website/node_modules/.bin:/home/gyu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/gyu/intelFPGA_lite/18.1/modelsim_ase/bin:/home/gyu/intelFPGA_lite/18.1/quartus/bin
+10 verbose lifecycle room-occupancy-app@0.1.0~dev: CWD: /home/gyu/Classes/347/people_counter/website
+11 silly lifecycle room-occupancy-app@0.1.0~dev: Args: [ '-c', 'run-p server start' ]
+12 info lifecycle room-occupancy-app@0.1.0~dev: Failed to exec dev script
+13 verbose stack Error: room-occupancy-app@0.1.0 dev: `run-p server start`
+13 verbose stack spawn ENOENT
+13 verbose stack     at ChildProcess.<anonymous> (/usr/share/npm/lib/utils/spawn.js:17:16)
+13 verbose stack     at emitTwo (events.js:126:13)
+13 verbose stack     at ChildProcess.emit (events.js:214:7)
+13 verbose stack     at maybeClose (internal/child_process.js:925:16)
+13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)
+14 verbose pkgid room-occupancy-app@0.1.0
+15 verbose cwd /home/gyu/Classes/347/people_counter/website
+16 error Linux 5.3.0-46-generic
+17 error argv "/usr/bin/node" "/usr/bin/npm" "run" "dev"
+18 error node v8.10.0
+19 error npm  v3.5.2
+20 error file sh
+21 error code ELIFECYCLE
+22 error errno ENOENT
+23 error syscall spawn
+24 error room-occupancy-app@0.1.0 dev: `run-p server start`
+24 error spawn ENOENT
+25 error Failed at the room-occupancy-app@0.1.0 dev script 'run-p server start'.
+25 error Make sure you have the latest version of node.js and npm installed.
+25 error If you do, this is most likely a problem with the room-occupancy-app package,
+25 error not with npm itself.
+25 error Tell the author that this fails on your system:
+25 error     run-p server start
+25 error You can get information on how to open an issue for this project with:
+25 error     npm bugs room-occupancy-app
+25 error Or if that isn't available, you can get their info via:
+25 error     npm owner ls room-occupancy-app
+25 error There is likely additional logging output above.
+26 verbose exit [ 1, true ]
