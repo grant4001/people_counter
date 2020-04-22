@@ -11,6 +11,18 @@ const AdminPortal = () => {
   }, []);
   let rendered_list = locationData.map((metadata, index) => {
     let url = "/location?name=" + metadata.name;
+    let update_cur = () => {
+      let value = document.getElementById(`current_occupancy_${metadata.id}`).value;
+      if (!value) {
+        return;
+      }
+      putData('/locations/cur/' + index, { value: value }).then(
+        (response) => {
+          console.log(response);
+          window.location.reload();
+        }
+      );
+    };
     let update_max = () => {
       let value = document.getElementById(`max_occupancy_${metadata.id}`).value;
       if (!value) {
@@ -26,9 +38,9 @@ const AdminPortal = () => {
     return (
       <div className="row" key={index}>
         <div className="d-inline col-2">{metadata.name}: </div>
-        <div className="d-inline col-1">69/{metadata.maximum} </div>
+        <div className="d-inline col-1">{metadata.current}/{metadata.maximum} </div>
         <div className="d-inline col-2">
-          <div className="input-group mb-3">
+          <div className="input-group mb-2">
             <input
               type="number"
               id={`current_occupancy_${metadata.id}`}
@@ -36,8 +48,11 @@ const AdminPortal = () => {
               aria-label="Current Occupancy" />
             <div className="input-group-append">
               <button
+                onClick={update_cur}
                 className="btn btn-outline-secondary"
-                type="button">Update</button>
+                type="button">
+                Update
+              </button>
             </div>
           </div>
         </div>
