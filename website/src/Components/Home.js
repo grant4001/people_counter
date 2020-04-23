@@ -2,13 +2,27 @@ import React, { useState, useEffect } from 'react';
 
 const MAX_LEVEL = 8;
 
+const updateDelay = 10 * 1000;
+
 const Home = () => {
   const [locationData, setLocationData] = useState([]);
 
   useEffect(() => {
-    fetch("/locations").then(response => response.json()).then(payload => {
-      setLocationData(payload.data);
-    });
+    let isCancelled = false;
+    const refreshLocations = () => {
+      console.log("fetching locations");
+      fetch("/locations").then(response => response.json()).then(payload => {
+        if (!isCancelled) {
+          setLocationData(payload.data);
+        }
+      });
+    }
+    refreshLocations();
+    const interval = setInterval(refreshLocations, updateDelay);
+    return () => {
+      isCancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
   return (
