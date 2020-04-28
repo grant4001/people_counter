@@ -11,7 +11,7 @@ camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(320, 240))
 
 # PI STUFF
-ser = serial.Serial(port='/dev/ttyS0', baudrate=921600)
+ser = serial.Serial(port='/dev/ttyS0', baudrate=1843200)
 print(ser)
 
 # allow the camera to warmup
