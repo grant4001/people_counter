@@ -25,7 +25,7 @@ import serial
 buffer = []
 old_time = 0.0
 idx_saved = 0
-BAUD_RATE = 1843200
+BAUD_RATE = 921600
 
 ser = serial.Serial("/dev/ttyUSB0", BAUD_RATE)  # Open port with baud rate
 
