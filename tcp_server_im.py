@@ -3,7 +3,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import cv2
-
+from subprocess import check_output
 
 
 # initialize the camera and grab a reference to the raw camera capture
@@ -13,18 +13,21 @@ camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(320, 240))
 
 # networking interface
-TCP_IP = 'raspberrypi'
+wlan0_ip = check_output(['hostname', '-I']).decode('utf-8').split()[0]
+print('Rpi\'s wlan0 IP: ' + wlan0_ip)
+TCP_IP = wlan0_ip #socket.gethostbyname('raspberrypi')
 TCP_PORT = 8008
 BUFFER_SIZE = 1024
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((socket.gethostbyname(TCP_IP), TCP_PORT))
+s.bind((TCP_IP, TCP_PORT))
 s.listen(1)
+print('Listening for connection...')
 
 # allow the camera to warmup
 time.sleep(0.1)
 
 conn, addr = s.accept()
-print('Connection address: ')
+print('Accepted connection with address: ')
 print(addr)
 
 while 1:

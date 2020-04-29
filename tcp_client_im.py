@@ -24,7 +24,7 @@ import socket
 
 
 # Networking interface
-TCP_IP = 'raspberrypi'
+TCP_IP = socket.gethostbyname('raspberrypi')
 TCP_PORT = 8008
 BUFFER_SIZE = 1024
 
@@ -56,8 +56,10 @@ args = vars(ap.parse_args())
 # initialize the list of class labels MobileNet SSD was trained to
 # detect
 CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-           "bus", "car", "cat", "chair", "cow",
-           "dog", "horse", "motorbike", "person"]
+           "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+           "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+           "sofa", "train", "tvmonitor"]
+
 
 # load our serialized model from disk
 print("[INFO] loading model...")
@@ -100,7 +102,7 @@ fps = FPS().start()
 
 # Connect to TCP port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((socket.gethostbyname(TCP_IP), TCP_PORT))
+s.connect((TCP_IP, TCP_PORT))
 
 # loop over frames from the video stream
 while True:
