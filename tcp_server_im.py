@@ -13,11 +13,11 @@ camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(320, 240))
 
 # networking interface
-TCP_IP = '192.168.1.96'
+TCP_IP = 'raspberrypi'
 TCP_PORT = 8008
 BUFFER_SIZE = 1024
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((TCP_IP, TCP_PORT))
+s.bind((socket.gethostbyname(TCP_IP), TCP_PORT))
 s.listen(1)
 
 # allow the camera to warmup
@@ -38,6 +38,11 @@ while 1:
         # cv2.imshow("Frame", image)
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
-        conn.send(encimage.tobytes())
-
+        try:
+            conn.send(encimage.tobytes())
+        except ConnectionResetError:
+            print("Connection reset")
+        except BrokenPipeError:
+            print("Connection lost")
+            conn, addr = s.accept()
 conn.close()
