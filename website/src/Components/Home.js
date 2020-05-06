@@ -10,12 +10,18 @@ const Home = () => {
   useEffect(() => {
     let isCancelled = false;
     const refreshLocations = () => {
-      console.log("fetching locations");
-      fetch("/locations").then(response => response.json()).then(payload => {
-        if (!isCancelled) {
-          setLocationData(payload.data);
-        }
-      });
+
+      let searchParam = new URLSearchParams();
+      searchParam.append("date", new Date().getTime());
+      let url = `/locations?${searchParam}`;
+      console.log("fetching " + url);
+      fetch(url)
+        .then(response => response.json())
+        .then(payload => {
+          if (!isCancelled) {
+            setLocationData(payload.data);
+          }
+        });
     }
     refreshLocations();
     const interval = setInterval(refreshLocations, updateDelay);
