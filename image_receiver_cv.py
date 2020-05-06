@@ -25,7 +25,9 @@ import serial
 buffer = []
 old_time = 0.0
 idx_saved = 0
-ser = serial.Serial("/dev/ttyUSB0", 921600)  # Open port with baud rate
+BAUD_RATE = 921600
+
+ser = serial.Serial("/dev/ttyUSB0", BAUD_RATE)  # Open port with baud rate
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -327,12 +329,12 @@ if writer is not None:
     writer.release()
 
 # if we are not using a video file, stop the camera video stream
-if not args.get("input", False):
-    vs.stop()
+#if not args.get("input", False):
+#    vs.stop()
 
 # otherwise, release the video file pointer
-else:
-    vs.release()
+#else:
+#    vs.release()
 
 # close any open windows
 cv2.destroyAllWindows()
