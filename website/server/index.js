@@ -42,6 +42,31 @@ app.get('/locations', (req, res) => {
   });
 });
 
+app.post('/locations', (req, res) => {
+  let new_name = req.body.name;
+  let p = path.join('..', 'data');
+  fs.readdir(p, (err, items) => {
+    if (err) console.log(err);
+
+    // generate a new ID for new location
+    let new_folder = items.length;
+    fs.mkdir(`${p}/${new_folder}`, err => {
+      if (err) {
+        console.log(err);
+        res.status(400).send("error occurred creating file");
+      } else {
+        let meta_contents = JSON.stringify({ name: new_name, maximum: 100, current: 0 });
+        fs.writeFile(`${p}/${new_folder}/meta.json`, meta_contents,
+          err => {
+            if (err) console.log(err);
+            res.setHeader('Content-Type', 'text/html');
+            res.send("Ok");
+          });
+      }
+    });
+  });
+});
+
 app.patch('/locations/max/:location_id', (req, res) => {
   let location_id = req.params.location_id;
   let p = path.join('..', 'data', location_id, 'meta.json');

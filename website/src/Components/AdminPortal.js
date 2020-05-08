@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { patchData, postData } from "./Utils";
 
 const AdminPortal = () => {
   const [locationData, setLocationData] = useState([]);
@@ -83,6 +84,10 @@ const AdminPortal = () => {
         </div>
       </div>)
   });
+  const new_location = () => {
+    let name = document.getElementById("new_location").value;
+    postData('/locations', { name: name }).then(() => window.location.reload());
+  }
   return (
     <div>
       <h1>Admin Portal</h1>
@@ -94,21 +99,25 @@ const AdminPortal = () => {
           <div className="col-2">Maximum Occupancy</div>
         </div>
         {rendered_list}
+        <div>
+          <h2>New Location</h2>
+          <div className="">
+            <div className="col-6">
+              <label htmlFor="new_location">Location Name</label>
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  id="new_location"
+                  className="form-control"
+                  aria-label="Maximum Occupancy" />
+              </div>
+            </div>
+          </div>
+          <button className="btn btn-primary mb-3" onClick={new_location}> Submit </button>
+        </div>
       </div>
     </div>
   );
-}
-
-async function patchData(url = '', data = {}) {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
-  });
-  return await response.text(); // parses JSON response into native JavaScript objects
 }
 
 export default AdminPortal;
