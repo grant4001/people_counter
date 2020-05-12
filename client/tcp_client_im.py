@@ -56,6 +56,8 @@ ap.add_argument("-c", "--confidence", type=float, default=0.4,
                 help="minimum probability to filter weak detections")
 ap.add_argument("-s", "--skip-frames", type=int, default=30,
                 help="# of skip frames between detections")
+ap.add_argument("-w", "--write-interval", type=int, default=60,
+                help="# time interval between occupancy writes to file")
 args = vars(ap.parse_args())
 
 # initialize the list of class labels MobileNet SSD was trained to
@@ -104,6 +106,9 @@ totalUp = 0
 
 # start the frames per second throughput estimator
 fps = FPS().start()
+startTime = 0.0
+stopTime = 0.0
+WRITE_INTERVAL = args["write-interval"]
 
 # Connect to TCP port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -339,7 +344,14 @@ while True:
         fps.update()
 
         # write the upcount and downcount to a file
-
+        
+        if stopTime - startTime >= WRITE_INTERVAL:
+            occupancyData = open("../data/0/occupancyData.txt")
+            occupancyData.write(str(max(0, totalUp - totalDown)) + "\t" + str(time.time()) + "\n")
+            occupancyData.close()
+            startTime = stopTime
+        else:
+            stopTime = time.time()
 
 # stop the timer and display FPS information
 fps.stop()
