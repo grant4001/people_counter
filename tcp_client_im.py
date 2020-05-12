@@ -116,9 +116,9 @@ while True:
     # print(len(idx_buffer))
 
     if len(idx_buffer) > 1:
-        print('full')
+        #print('full')
         image = buffer[idx_buffer[0]:idx_buffer[1]]
-        print(len(bytes(image)))
+        #print(len(bytes(image)))
         # with open('im.jpg', 'wb') as f:
         # f.write(bytes(image))
         # with open('im.jpg', 'rb') as f:
@@ -126,8 +126,8 @@ while True:
         # x = np.fromstring(buf, dtype='uint8')
         #img = cv2.imdecode(x, cv2.IMREAD_UNCHANGED)
 
-        im = cv2.imdecode(np.frombuffer(
-            bytes(image), dtype='uint8'), cv2.IMREAD_UNCHANGED)
+        im = cv2.imdecode(np.frombuffer(bytes(image), dtype='uint8'), cv2.IMREAD_UNCHANGED)
+        frame = im
 
         #cv2.imshow('image', im)
         # cv2.waitKey(1)
@@ -140,18 +140,18 @@ while True:
             break
 
         buffer = buffer[idx_buffer[1]:]
-        idx_saved = 0
+        # idx_saved = 0
 
         print(time.time() - old_time)
         old_time = time.time()
 
-        frame = im
-        frame = frame[1] if args.get("input", False) else frame
+        
+        # frame = frame[1] if args.get("input", False) else frame
 
         # if we are viewing a video and we did not grab a frame then we
         # have reached the end of the video
-        if args["input"] is not None and frame is None:
-            break
+        # if args["input"] is not None and frame is None:
+        #    break
 
         # resize the frame to have a maximum width of 500 pixels (the
         # less data we have, the faster we can process it), then convert
@@ -325,7 +325,7 @@ while True:
 
         # if the `q` key was pressed, break from the loop
         if key == ord("q"):
-            breaks
+            break
 
         # increment the total number of frames processed thus far and
         # then update the FPS counter
