@@ -307,6 +307,7 @@ while True:
             ("Up", totalUp),
             ("Down", totalDown),
             ("Status", status),
+            ("FPS", fps.fps())
         ]
 
         # loop over the info tuples and draw them on our frame
