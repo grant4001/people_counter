@@ -29,7 +29,7 @@ from imutils.video import FPS
 
 
 # Networking interface
-TCP_IP = socket.gethostbyname('raspberrypi')
+TCP_IP = '192.168.1.96' #socket.gethostbyname('raspberrypi')
 TCP_PORT = 8008
 BUFFER_SIZE = 1024
 
@@ -48,6 +48,12 @@ ap.add_argument("-p", "--prototxt", required=True,
                 help="path to Caffe 'deploy' prototxt file")
 ap.add_argument("-m", "--model", required=True,
                 help="path to Caffe pre-trained model")
+ap.add_argument("-w", "--write_interval", required=True, type=int, default=60,
+                help="# time interval between occupancy writes to file")
+ap.add_argument("-d", "--data_path", type=str, default="../data/0/occupancyData.txt",
+                help="path to occupancy data file")
+ap.add_argument("-x", "--reset_output_file", type=str, default="False",
+                help="reset the occupancy data file")
 ap.add_argument("-i", "--input", type=str,
                 help="path to optional input video file")
 ap.add_argument("-o", "--output", type=str,
@@ -56,8 +62,6 @@ ap.add_argument("-c", "--confidence", type=float, default=0.4,
                 help="minimum probability to filter weak detections")
 ap.add_argument("-s", "--skip-frames", type=int, default=30,
                 help="# of skip frames between detections")
-ap.add_argument("-w", "--write-interval", type=int, default=60,
-                help="# time interval between occupancy writes to file")
 args = vars(ap.parse_args())
 
 # initialize the list of class labels MobileNet SSD was trained to
@@ -108,7 +112,16 @@ totalUp = 0
 fps = FPS().start()
 startTime = 0.0
 stopTime = 0.0
-WRITE_INTERVAL = args["write-interval"]
+
+# print(args)
+WRITE_INTERVAL = args["write_interval"]
+DATA_PATH = args["data_path"]
+
+meta_path = os.path.dirname(os.path.realpath(__file__))
+data_path = os.path.join(meta_path, DATA_PATH)
+data_path_valid = os.path.realpath(data_path)
+if args["reset_output_file"] == "True":
+    os.remove(data_path_valid)
 
 # Connect to TCP port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -122,7 +135,7 @@ while True:
     for idx in range(0, len(buffer) - 1):
         if buffer[idx] == 0xff and buffer[idx + 1] == 0xd8:
             idx_buffer.append(idx)
-    #idx_saved = len(buffer) - 1
+    #idx_saved = len(buff`er) - 1
     # print(len(idx_buffer))
 
     if len(idx_buffer) > 1:
@@ -316,8 +329,8 @@ while True:
         info = [
             ("Up", totalUp),
             ("Down", totalDown),
-            ("Status", status),
-            ("FPS", fps.fps())
+            ("Status", status)
+            #,("FPS", fps.fps())
         ]
 
         # loop over the info tuples and draw them on our frame
@@ -346,8 +359,8 @@ while True:
         # write the upcount and downcount to a file
         
         if stopTime - startTime >= WRITE_INTERVAL:
-            occupancyData = open("../data/0/occupancyData.txt")
-            occupancyData.write(str(max(0, totalUp - totalDown)) + "\t" + str(time.time()) + "\n")
+            occupancyData = open(data_path_valid, "a+")
+            occupancyData.write(str(time.time()) + "\t" + str(totalUp) + "\t" + str(totalDown) + "\n")
             occupancyData.close()
             startTime = stopTime
         else:
