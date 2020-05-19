@@ -37,12 +37,13 @@ const Home = () => {
       <div>
         {
           locationData.map((metadata, index) => {
-            let public_level = metadata.current / metadata.maximum * MAX_LEVEL;
+            // let public_level = metadata.current / metadata.maximum * MAX_LEVEL;
+            let public_level = metadata.current;
             public_level = Math.round(public_level);
             return (<span className="row" key={index}>
               <h3 className="col-4">{metadata.name}: </h3>
               <h3 className="col-4">Current Level: </h3>
-              <h3 className="col-4">{public_level}/{MAX_LEVEL}</h3>
+              <h3 className="col-4">{public_level}/{metadata.maximum}</h3>
             </span>);
           })
         }

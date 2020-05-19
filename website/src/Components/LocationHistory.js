@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 
 
 
@@ -58,7 +58,7 @@ const LocationHistory = () => {
       <h1>{searchParams.get("name")}: Location History</h1>
       <p>Location History information goes here</p>
       <div id="graph" className="col-6">
-        <Bar data={data} options={options} width={200} height={100} />
+        <Line data={data} options={options} width={200} height={100} />
       </div>
     </div>
   );

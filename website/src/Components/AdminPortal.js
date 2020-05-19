@@ -39,7 +39,7 @@ const AdminPortal = () => {
     return (
       <div className="row" key={index}>
         <div className="d-inline col-2">{metadata.name}: </div>
-        <div className="d-inline col-1">{metadata.current}/{metadata.maximum} </div>
+        <div className="d-inline col-1">{metadata.current || "-"}/{metadata.maximum} </div>
         <div className="d-inline col-2">
           <div className="input-group mb-2">
             <input

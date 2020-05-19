@@ -18,6 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/locations', (req, res) => {
+  // let timestamp = req.query
   fs.readdir('../data', (err, filenames) => {
     if (err) console.log(err);
     // reading files is better as async
@@ -30,12 +31,35 @@ app.get('/locations', (req, res) => {
             if (err) reject(err);
             let data = JSON.parse(contents);
             data['id'] = p;
-            resolve(data);
+
+            fs.readFile(path.join('..','data', p, 'occupancyData.txt'),
+            'utf8',
+            (err, o_contents) => {
+              if (err) {
+                data['current'] = null;
+                resolve(data);
+                return;
+              }
+              if (o_contents) {
+                o_data = o_contents.split("\r\n");
+                o_data = o_data.map(element => element.split("\t"));
+                o_data.pop();
+                last_e = o_data[o_data.length - 1];
+                [first, mid, last] = last_e;
+                data['current'] = last - mid;
+              }
+              else {
+                data['current'] = null;
+              }
+              resolve(data);
+            })
+            
           })
       }));
     // wait for all files to finish reading then send the
     // parsed array to client
     Promise.all(promises).then(parsed_array => {
+      console.log(parsed_array);
       res.setHeader('Content-Type', 'application/json');
       res.send({ data: parsed_array });
     }).catch(err => console.log(err));
