@@ -32,28 +32,28 @@ app.get('/locations', (req, res) => {
             let data = JSON.parse(contents);
             data['id'] = p;
 
-            fs.readFile(path.join('..','data', p, 'occupancyData.txt'),
-            'utf8',
-            (err, o_contents) => {
-              if (err) {
-                data['current'] = null;
+            fs.readFile(path.join('..', 'data', p, 'occupancyData.txt'),
+              'utf8',
+              (err, o_contents) => {
+                if (err) {
+                  data['current'] = null;
+                  resolve(data);
+                  return;
+                }
+                if (o_contents) {
+                  let o_data = o_contents.split("\r\n");
+                  o_data = o_data.map(element => element.split("\t"));
+                  o_data.pop();
+                  let last_e = o_data[o_data.length - 1];
+                  let [, mid, last] = last_e;
+                  data['current'] = last - mid;
+                }
+                else {
+                  data['current'] = null;
+                }
                 resolve(data);
-                return;
-              }
-              if (o_contents) {
-                o_data = o_contents.split("\r\n");
-                o_data = o_data.map(element => element.split("\t"));
-                o_data.pop();
-                last_e = o_data[o_data.length - 1];
-                [first, mid, last] = last_e;
-                data['current'] = last - mid;
-              }
-              else {
-                data['current'] = null;
-              }
-              resolve(data);
-            })
-            
+              })
+
           })
       }));
     // wait for all files to finish reading then send the
