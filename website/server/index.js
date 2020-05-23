@@ -41,10 +41,13 @@ app.get('/locations', (req, res) => {
                   return;
                 }
                 if (o_contents) {
-                  let o_data = o_contents.split("\r\n");
-                  o_data = o_data.map(element => element.split("\t"));
+                  let o_data = o_contents
+                    .split("\r\n")
+                    .map(element => element.split("\t"));
                   o_data.pop();
                   let last_e = o_data[o_data.length - 1];
+                  console.log("last element is:");
+                  console.log(last_e);
                   let [, mid, last] = last_e;
                   data['current'] = last - mid;
                 }
@@ -59,7 +62,6 @@ app.get('/locations', (req, res) => {
     // wait for all files to finish reading then send the
     // parsed array to client
     Promise.all(promises).then(parsed_array => {
-      console.log(parsed_array);
       res.setHeader('Content-Type', 'application/json');
       res.send({ data: parsed_array });
     }).catch(err => console.log(err));
