@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const MAX_LEVEL = 8;
+//const MAX_LEVEL = 8;
 
 const updateDelay = 10 * 1000;
 
