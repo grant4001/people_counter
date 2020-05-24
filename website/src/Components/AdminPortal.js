@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { patchData, postData } from "./Utils";
+import { patchData, postData, deleteData } from "./Utils";
 
 const AdminPortal = () => {
   const [locationData, setLocationData] = useState([]);
@@ -87,7 +87,13 @@ const AdminPortal = () => {
   const new_location = () => {
     let name = document.getElementById("new_location").value;
     postData('/locations', { name: name }).then(() => window.location.reload());
-  }
+  };
+  const delete_location = () => {
+    let content = document.getElementById("delete-bar").value;
+    let id = parseInt(content.split('-')[0]);
+    console.log(id);
+    deleteData('/locations/' + id).then(() => window.location.reload());
+  };
   return (
     <div>
       <h1>Admin Portal</h1>
@@ -114,6 +120,19 @@ const AdminPortal = () => {
             </div>
           </div>
           <button className="btn btn-primary mb-3" onClick={new_location}> Submit </button>
+        </div>
+        <div>
+          <h2>Delete Location</h2>
+          <div className="">
+            <div className="col-6">
+              <select
+                className="selectpicker form-control mb-3"
+                id="delete-bar">
+                {locationData.map((ele, index) => <option key={index}>{index + " - " + ele.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <button className="btn btn-danger mb-3" onClick={delete_location}> Delete </button>
         </div>
       </div>
     </div>

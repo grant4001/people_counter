@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
+const rimraf = require('rimraf');
 //const pino = require('express-pino-logger')();
 
 const app = express();
@@ -40,17 +41,13 @@ app.get('/locations', (req, res) => {
                   resolve(data);
                   return;
                 }
-                console.log(o_contents);
                 if (o_contents) {
                   let o_data = o_contents
                     .split(/\n|\r/)
                     .map(e => e.split("\t"))
                     .filter(e => e.length === 3);
-                  console.log(o_data);
                   let last_e = o_data[o_data.length - 1];
-                  console.log(last_e);
                   if (!!last_e) {
-                    console.log(`last datum for location ${p} is: ${last_e}`);
                     data['current'] = last_e[2] - last_e[1];
                   } else {
                     data['current'] = null;
@@ -117,6 +114,18 @@ app.patch('/locations/:key/:location_id', (req, res) => {
       res.setHeader('Content-Type', 'text/html');
       res.send("OK");
     })
+  });
+});
+
+app.delete('/locations/:key', (req, res) => {
+  let location_id = req.params.key;
+  let p = path.join('..', 'data', location_id);
+  rimraf(p, (err) => {
+    if (err) {
+      console.log(err);
+    }
+    res.setHeader('Content-Type', 'text/html');
+    res.send("Delete Successful");
   });
 });
 
