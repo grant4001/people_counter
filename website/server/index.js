@@ -40,12 +40,15 @@ app.get('/locations', (req, res) => {
                   resolve(data);
                   return;
                 }
+                console.log(o_contents);
                 if (o_contents) {
                   let o_data = o_contents
-                    .split("\r\n")
+                    .split(/\n|\r/)
                     .map(e => e.split("\t"))
                     .filter(e => e.length === 3);
+                  console.log(o_data);
                   let last_e = o_data[o_data.length - 1];
+                  console.log(last_e);
                   if (!!last_e) {
                     console.log(`last datum for location ${p} is: ${last_e}`);
                     data['current'] = last_e[2] - last_e[1];

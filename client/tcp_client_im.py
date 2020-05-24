@@ -165,7 +165,6 @@ while True:
         buffer = buffer[idx_buffer[1]:]
         # idx_saved = 0
 
-        print(time.time() - old_time)
         old_time = time.time()
 
         
@@ -360,7 +359,9 @@ while True:
         
         if stopTime - startTime >= WRITE_INTERVAL:
             occupancyData = open(data_path_valid, "a+")
+            print("Writing.\n");
             occupancyData.write(str(time.time()) + "\t" + str(totalUp) + "\t" + str(totalDown) + "\n")
+            print("Done writing.\n");
             occupancyData.close()
             startTime = stopTime
         else:
