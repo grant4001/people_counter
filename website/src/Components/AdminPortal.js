@@ -11,13 +11,14 @@ const AdminPortal = () => {
     });
   }, []);
   let rendered_list = locationData.map((metadata, index) => {
-    let url = "/location?name=" + metadata.name;
+    let location_params = new URLSearchParams([["name", metadata.name], ["id", metadata.id]]);
+    let url = "/location?" + location_params.toString();
     let update_cur = () => {
       let value = document.getElementById(`current_occupancy_${metadata.id}`).value;
       if (!value) {
         return;
       }
-      patchData('/locations/cur/' + index, { value: value }).then(
+      patchData('/locations/cur/' + metadata.id, { value: value }).then(
         (response) => {
           console.log(response);
           window.location.reload();
@@ -29,7 +30,7 @@ const AdminPortal = () => {
       if (!value) {
         return;
       }
-      patchData('/locations/max/' + index, { value: value }).then(
+      patchData('/locations/max/' + metadata.id, { value: value }).then(
         (response) => {
           console.log(response);
           window.location.reload();
@@ -128,7 +129,7 @@ const AdminPortal = () => {
               <select
                 className="selectpicker form-control mb-3"
                 id="delete-bar">
-                {locationData.map((ele, index) => <option key={index}>{index + " - " + ele.name}</option>)}
+                {locationData.map((ele, index) => <option key={index}>{ele.id + " - " + ele.name}</option>)}
               </select>
             </div>
           </div>

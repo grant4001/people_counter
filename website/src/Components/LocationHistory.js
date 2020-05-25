@@ -46,22 +46,29 @@ const options = {
 
 const LocationHistory = () => {
   const [chartState, setChartState] = useState({ x: defaultX, y: defaultY, redraw: false });
-  var searchParams = new URLSearchParams(window.location.search);
-
+  let searchParams = new URLSearchParams(window.location.search);
+  let name = searchParams.get("name");
+  let id = searchParams.get("id");
   useEffect(() => {
-    fetch(`/locations`)
+    fetch(`/locations/${id}/history`)
       .then(response => response.json())
       .then(payload => {
         console.log("fetch completed");
-        /* TODO: finish this once backend is complete*/
-        setChartState(state => ({ ...state, redraw: true }));
+        console.log(payload);
+        if (payload.times && payload.occupancy) {
+          let x = payload.times.map(Math.floor);
+          let y = payload.occupancy;
+          setChartState(state => ({ x: x, y: y, redraw: true }));
+        } else {
+          setChartState({ x: [], y: [] });
+        }
       });
-  }, []);
+  }, [id]);
 
 
   return (
     <div>
-      <h1>{searchParams.get("name")}: Location History</h1>
+      <h1>{name}: Location History</h1>
       <p>Showing location data for date: {new Date().toLocaleDateString()}</p>
       <div id="graph" className="col-8">
         <LineChart {...chartState} />
@@ -71,6 +78,9 @@ const LocationHistory = () => {
 }
 
 const LineChart = ({ x, y, redraw }) => {
+  if (x.length === 0 || y.length === 0) {
+    return <div>No data could be found for this location!</div>;
+  }
   const data = {
     labels: x.map(toTimeStr),
     datasets: [{

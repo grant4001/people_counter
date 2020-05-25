@@ -70,33 +70,39 @@ app.get('/locations', (req, res) => {
   });
 });
 
-app.get('/locations/history', (req, res) => {
-  console.log('hi')
-  fs.readFile(path.join('..', 'data', '0', 'occupancyData.txt'),
-  'utf8',
-  (err, o_contents) => {
-    if (err) {
-      console.log(err);
-      reject(err);
-    };
-    var data = {};
-    data['id'] = 0;
-    let o_data = o_contents
-      .split(/\n|\r/)
-      .map(e => e.split("\t"))
-      .filter(e => e.length === 3);
-    
-    time_array = [];
-    occu_array = [];
-    for (i = 0; i < o_data.length; i++) {
-      time_array.push(o_data[i][0]);
-      occu_array.push(o_data[i][2] - o_data[i][1]);
-    }
-    data['times'] = time_array;
-    data['occupancy'] = occu_array;
-  })
-  // res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(data));
+app.get('/locations/:id/history', (req, res) => {
+  let id = req.params.id;
+  var data = {};
+  fs.readFile(path.join('..', 'data', id, 'occupancyData.txt'),
+    'utf8',
+    (err, o_contents) => {
+      if (err) {
+        console.log(err);
+      }
+      // if contents is empty 
+      if (!o_contents) {
+        let output = { message: "could not read occupancy data" };
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(output));
+        return;
+      }
+      data['id'] = 0;
+      let o_data = o_contents
+        .split(/\n|\r/)
+        .map(e => e.split("\t"))
+        .filter(e => e.length === 3);
+
+      let time_array = [];
+      let occu_array = [];
+      for (let i = 0; i < o_data.length; i++) {
+        time_array.push(o_data[i][0]);
+        occu_array.push(o_data[i][2] - o_data[i][1]);
+      }
+      data['times'] = time_array;
+      data['occupancy'] = occu_array;
+      res.setHeader('Content-Type', 'application/json');
+      res.send(data);
+    })
 });
 
 app.post('/locations', (req, res) => {
@@ -112,7 +118,7 @@ app.post('/locations', (req, res) => {
         console.log(err);
         res.status(400).send("error occurred creating file");
       } else {
-        let meta_contents = JSON.stringify({ name: new_name, maximum: 100, current: 0 });
+        let meta_contents = JSON.stringify({ name: new_name, maximum: 100 });
         fs.writeFile(`${p}/${new_folder}/meta.json`, meta_contents,
           err => {
             if (err) console.log(err);
