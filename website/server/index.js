@@ -70,6 +70,35 @@ app.get('/locations', (req, res) => {
   });
 });
 
+app.get('/locations/history', (req, res) => {
+  console.log('hi')
+  fs.readFile(path.join('..', 'data', '0', 'occupancyData.txt'),
+  'utf8',
+  (err, o_contents) => {
+    if (err) {
+      console.log(err);
+      reject(err);
+    };
+    var data = {};
+    data['id'] = 0;
+    let o_data = o_contents
+      .split(/\n|\r/)
+      .map(e => e.split("\t"))
+      .filter(e => e.length === 3);
+    
+    time_array = [];
+    occu_array = [];
+    for (i = 0; i < o_data.length; i++) {
+      time_array.push(o_data[i][0]);
+      occu_array.push(o_data[i][2] - o_data[i][1]);
+    }
+    data['times'] = time_array;
+    data['occupancy'] = occu_array;
+  })
+  // res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(data));
+});
+
 app.post('/locations', (req, res) => {
   let new_name = req.body.name;
   let p = path.join('..', 'data');
