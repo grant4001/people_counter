@@ -85,6 +85,7 @@ const LineChart = ({ x, y, redraw }) => {
     labels: x.map(toTimeStr),
     datasets: [{
       label: "Location Occupancy",
+      lineTension: 0,
       fill: false,
       backgroundColor: 'rgb(255, 99, 132)',
       borderColor: 'rgb(255, 99, 132)',
