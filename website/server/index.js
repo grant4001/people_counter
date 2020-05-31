@@ -18,6 +18,29 @@ app.use((req, res, next) => {
   next();
 });
 
+function calibrate(readings, calibration) {
+  var output = [];
+  // calibrations of the form [time, people]
+  let c_index = 0;
+
+  var offset = 0;
+  for (const [time, peopleOut, peopleIn] of readings) {
+    let [calibrate_time, calibrate_people] = calibration[c_index];
+    if (time < calibrate_time) {
+      output.push([time, peopleIn - peopleOut + offset]);
+    } else {
+      let lastOutput = output[output.length - 1][1] || 0;
+      offset = calibrate_people - lastOutput;
+      output.push([time, peopleIn - peopleOut + offset]);
+      c_index++;
+    }
+  }
+  // dump the rest of the contents of the calibration onto the end
+  output.push(...calibration.slice(c_index));
+  console.log(output);
+  return output;
+}
+
 app.get('/locations', (req, res) => {
   // let timestamp = req.query
   fs.readdir('../data', (err, filenames) => {
@@ -44,11 +67,22 @@ app.get('/locations', (req, res) => {
                 if (o_contents) {
                   let o_data = o_contents
                     .split(/\n|\r/)
-                    .map(e => e.split("\t"))
+                    .map(e => e.split("\t").map(parseFloat))
                     .filter(e => e.length === 3);
+                  let calibration_filename = path.join('..', 'data', p, 'calibration.txt');
+                  if (fs.existsSync(calibration_filename)) {
+                    let calibration = fs.readFileSync(calibration_filename, "utf8");
+                    calibration = calibration.toString()
+                      .split("\n")
+                      .map(e => e.split(" ").map(parseFloat))
+                      .filter(e => e.length === 2);
+                    var calibrated_data = calibrate(o_data, calibration);
+                    o_data = calibrated_data;
+                  }
+                  console.log(o_data);
                   let last_e = o_data[o_data.length - 1];
                   if (!!last_e) {
-                    data['current'] = last_e[2] - last_e[1];
+                    data['current'] = last_e[1];
                   } else {
                     data['current'] = null;
                   }
@@ -92,11 +126,22 @@ app.get('/locations/:id/history', (req, res) => {
         .map(e => e.split("\t"))
         .filter(e => e.length === 3);
 
+
+      let calibration_filename = path.join('..', 'data', id, 'calibration.txt');
+      if (fs.existsSync(calibration_filename)) {
+        let calibration = fs.readFileSync(calibration_filename, "utf8");
+        calibration = calibration.toString()
+          .split("\n")
+          .map(e => e.split(" ").map(parseFloat))
+          .filter(e => e.length === 2);
+        var calibrated_data = calibrate(o_data, calibration);
+        o_data = calibrated_data;
+      }
       let time_array = [];
       let occu_array = [];
       for (let i = 0; i < o_data.length; i++) {
         time_array.push(o_data[i][0]);
-        occu_array.push(o_data[i][2] - o_data[i][1]);
+        occu_array.push(o_data[i][1]);
       }
       data['times'] = time_array;
       data['occupancy'] = occu_array;
@@ -138,18 +183,29 @@ const shorthands = {
 app.patch('/locations/:key/:location_id', (req, res) => {
   let metadata_key = shorthands[req.params.key] || req.params.key;
   let location_id = req.params.location_id;
-  let p = path.join('..', 'data', location_id, 'meta.json');
-  fs.readFile(p, (err, contents) => {
-    if (err) console.log(err);
-    let parsed = JSON.parse(contents);
-    parsed[metadata_key] = req.body.value;
-    let output = JSON.stringify(parsed);
-    fs.writeFile(p, output, (err) => {
+  if (metadata_key == "current") {
+    let data = (new Date().getTime() / 1000) + " " + req.body.value + "\n";
+    fs.appendFile(path.join('..', 'data', location_id, 'calibration.txt'), data, (err) => {
       if (err) console.log(err);
       res.setHeader('Content-Type', 'text/html');
       res.send("OK");
-    })
-  });
+    });
+
+
+  } else {
+    let p = path.join('..', 'data', location_id, 'meta.json');
+    fs.readFile(p, (err, contents) => {
+      if (err) console.log(err);
+      let parsed = JSON.parse(contents);
+      parsed[metadata_key] = req.body.value;
+      let output = JSON.stringify(parsed);
+      fs.writeFile(p, output, (err) => {
+        if (err) console.log(err);
+        res.setHeader('Content-Type', 'text/html');
+        res.send("OK");
+      })
+    });
+  }
 });
 
 app.delete('/locations/:key', (req, res) => {
