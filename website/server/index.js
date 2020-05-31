@@ -26,12 +26,13 @@ function calibrate(readings, calibration) {
   var offset = 0;
   for (const [time, peopleOut, peopleIn] of readings) {
     let [calibrate_time, calibrate_people] = calibration[c_index];
-    if (time < calibrate_time) {
-      output.push([time, peopleIn - peopleOut + offset]);
+    if (!calibrate_time || time < calibrate_time) {
+      output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
     } else {
-      let lastOutput = output[output.length - 1][1] || 0;
-      offset = calibrate_people - lastOutput;
-      output.push([time, peopleIn - peopleOut + offset]);
+      let [lastPeopleIn, lastPeopleOut] = output[output.length - 1].slice(2) || [0, 0];
+      console.log(lastPeopleIn, lastPeopleOut);
+      offset = calibrate_people - lastPeopleIn + lastPeopleOut;
+      output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
       c_index++;
     }
   }
@@ -123,7 +124,7 @@ app.get('/locations/:id/history', (req, res) => {
       data['id'] = 0;
       let o_data = o_contents
         .split(/\n|\r/)
-        .map(e => e.split("\t"))
+        .map(e => e.split("\t").map(parseFloat))
         .filter(e => e.length === 3);
 
 
