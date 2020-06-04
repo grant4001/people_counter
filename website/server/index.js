@@ -22,6 +22,7 @@ function calibrate(readings, calibration) {
   var output = [];
   // calibrations of the form [time, people]
   let c_index = 0;
+  var lastPeopleIn, lastPeopleOut;
 
   var offset = 0;
   for (const [time, peopleOut, peopleIn] of readings) {
@@ -29,8 +30,15 @@ function calibrate(readings, calibration) {
     if (!calibrate_time || time < calibrate_time) {
       output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
     } else {
-      let [lastPeopleIn, lastPeopleOut] = output[output.length - 1].slice(2) || [0, 0];
-      console.log(lastPeopleIn, lastPeopleOut);
+      if (output.length >= 1)
+      {
+        [lastPeopleIn, lastPeopleOut] = output[output.length - 1].slice(2) || [0, 0];
+      }
+      else
+      {
+        [lastPeopleIn, lastPeopleOut] = [0, 0];
+      }
+          //console.log(lastPeopleIn, lastPeopleOut);
       offset = calibrate_people - lastPeopleIn + lastPeopleOut;
       output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
       c_index++;

@@ -29,7 +29,8 @@ from imutils.video import FPS
 
 
 # Networking interface
-TCP_IP = '192.168.1.96' #socket.gethostbyname('raspberrypi')
+# TCP_IP = '192.168.1.115' 
+TCP_IP = socket.gethostbyname('raspberrypi')
 TCP_PORT = 8008
 BUFFER_SIZE = 1024
 
@@ -121,7 +122,10 @@ meta_path = os.path.dirname(os.path.realpath(__file__))
 data_path = os.path.join(meta_path, DATA_PATH)
 data_path_valid = os.path.realpath(data_path)
 if args["reset_output_file"] == "True":
-    os.remove(data_path_valid)
+    try:
+        os.remove(data_path_valid)
+    except:
+        print("Creating occupancyData.txt...")
 
 # Connect to TCP port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
