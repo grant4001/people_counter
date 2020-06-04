@@ -23,10 +23,20 @@ function calibrate(readings, calibration) {
   // calibrations of the form [time, people]
   let c_index = 0;
   var lastPeopleIn, lastPeopleOut;
+  var calibrate_time, calibrate_people;
 
   var offset = 0;
   for (const [time, peopleOut, peopleIn] of readings) {
-    let [calibrate_time, calibrate_people] = calibration[c_index];
+    if (calibration[c_index])
+    {
+      [calibrate_time, calibrate_people] = calibration[c_index];
+    }
+    else
+    {
+      calibrate_time = null;
+      calibrate_people = null;
+    }
+    
     if (!calibrate_time || time < calibrate_time) {
       output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
     } else {
@@ -91,7 +101,7 @@ app.get('/locations', (req, res) => {
                   console.log(o_data);
                   let last_e = o_data[o_data.length - 1];
                   if (!!last_e) {
-                    data['current'] = last_e[1];
+                    data['current'] = last_e[2] - last_e[1];
                   } else {
                     data['current'] = null;
                   }
