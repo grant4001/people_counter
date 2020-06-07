@@ -1,1 +1,0 @@
-sudo python3 tcp_client_im.py --prototxt ../mobilenet_ssd/MobileNetSSD_deploy.prototxt --model ../mobilenet_ssd/MobileNetSSD_deploy.caffemodel --data_path ../data/0/occupancyData.txt --reset_output_file True --write_interval 10 --skip-frames 10
