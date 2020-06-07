@@ -27,28 +27,24 @@ function calibrate(readings, calibration) {
 
   var offset = 0;
   for (const [time, peopleOut, peopleIn] of readings) {
-    if (calibration[c_index])
-    {
+    if (calibration[c_index]) {
       [calibrate_time, calibrate_people] = calibration[c_index];
     }
-    else
-    {
+    else {
       calibrate_time = null;
       calibrate_people = null;
     }
-    
+
     if (!calibrate_time || time < calibrate_time) {
       output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
     } else {
-      if (output.length >= 1)
-      {
+      if (output.length >= 1) {
         [lastPeopleIn, lastPeopleOut] = output[output.length - 1].slice(2) || [0, 0];
       }
-      else
-      {
+      else {
         [lastPeopleIn, lastPeopleOut] = [0, 0];
       }
-          //console.log(lastPeopleIn, lastPeopleOut);
+      //console.log(lastPeopleIn, lastPeopleOut);
       offset = calibrate_people - lastPeopleIn + lastPeopleOut;
       output.push([time, peopleIn - peopleOut + offset, peopleIn, peopleOut]);
       c_index++;
@@ -56,8 +52,7 @@ function calibrate(readings, calibration) {
   }
   // dump the rest of the contents of the calibration onto the end
   output.push(...calibration.slice(c_index));
-  console.log(output);
-  return output;
+  return output.map(x => x.slice(0, 2));
 }
 
 app.get('/locations', (req, res) => {
@@ -89,19 +84,22 @@ app.get('/locations', (req, res) => {
                     .map(e => e.split("\t").map(parseFloat))
                     .filter(e => e.length === 3);
                   let calibration_filename = path.join('..', 'data', p, 'calibration.txt');
+                  var calibration;
                   if (fs.existsSync(calibration_filename)) {
-                    let calibration = fs.readFileSync(calibration_filename, "utf8");
+                    calibration = fs.readFileSync(calibration_filename, "utf8");
                     calibration = calibration.toString()
                       .split("\n")
                       .map(e => e.split(" ").map(parseFloat))
                       .filter(e => e.length === 2);
-                    var calibrated_data = calibrate(o_data, calibration);
-                    o_data = calibrated_data;
+
+                  } else {
+                    calibration = [];
                   }
+                  o_data = calibrate(o_data, calibration);
                   console.log(o_data);
                   let last_e = o_data[o_data.length - 1];
                   if (!!last_e) {
-                    data['current'] = last_e[2] - last_e[1];
+                    data['current'] = last_e[1];
                   } else {
                     data['current'] = null;
                   }
@@ -202,7 +200,7 @@ const shorthands = {
 app.patch('/locations/:key/:location_id', (req, res) => {
   let metadata_key = shorthands[req.params.key] || req.params.key;
   let location_id = req.params.location_id;
-  if (metadata_key == "current") {
+  if (metadata_key === "current") {
     let data = (new Date().getTime() / 1000) + " " + req.body.value + "\n";
     fs.appendFile(path.join('..', 'data', location_id, 'calibration.txt'), data, (err) => {
       if (err) console.log(err);
